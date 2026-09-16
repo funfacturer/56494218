@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>Sport Dashboard Mobil</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Top App Header -->
+  <header>
+    <h1 id="app-title">Fußball Dashboard</h1>
+    <span class="badge-live">2024/25</span>
+  </header>
+
+  <!-- Sub-Menu: Fußball Ligen & Spieltag-Umschalter -->
+  <div id="football-nav">
+    <div class="chip-container">
+      <div class="chip active" onclick="switchFootballLeague('bl1')">1. Bundesliga</div>
+      <div class="chip" onclick="switchFootballLeague('bl2')">2. Bundesliga</div>
+      <div class="chip" onclick="switchFootballLeague('bl3')">3. Liga</div>
+      <div class="chip" onclick="switchFootballLeague('pl')">Premier League</div>
+    </div>
+
+    <!-- 3-Wege-Umschalter: Tabelle / Letzter Spieltag / Nächster Spieltag -->
+    <div class="view-switch">
+      <button class="active" id="btn-table" onclick="toggleFootballView('table')">Tabelle</button>
+      <button id="btn-recent" onclick="toggleFootballView('recent')">Letzter Spieltag</button>
+      <button id="btn-next" onclick="toggleFootballView('next')">Nächster Spieltag</button>
+    </div>
+  </div>
+
+  <!-- Sub-Menu: Formel 1 -->
+  <div id="f1-nav" style="display: none;">
+    <div class="chip-container">
+      <div class="chip active" onclick="switchF1Category('drivers')">Fahrerwertung</div>
+      <div class="chip" onclick="switchF1Category('constructors')">Konstrukteure</div>
+      <div class="chip" onclick="switchF1Category('races')">Nächste Rennen</div>
+    </div>
+  </div>
+
+  <main>
+    <!-- TAB 1: FUSSBALL CONTENT -->
+    <div id="tab-football" class="tab-content active">
+      
+      <!-- 1. Ansicht: Tabelle -->
+      <div id="fb-table-view" class="card">
+        <div class="card-header">
+          <span id="league-table-title">1. Bundesliga – Tabelle</span>
+          <span class="sub-header-info">Pkt / Diff</span>
+        </div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th class="pos-col">#</th>
+                <th>Verein</th>
+                <th class="num-col">Sp</th>
+                <th class="num-col">Diff</th>
+                <th class="points-col">Pkt</th>
+              </tr>
+            </thead>
+            <tbody id="table-body">
+              <!-- Dynamischer Inhalt via JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 2. Ansicht: Letzter / Aktueller Spieltag (Ergebnisse) -->
+      <div id="fb-recent-view" class="card" style="display: none;">
+        <div class="card-header">
+          <span id="league-recent-title">1. Bundesliga – Letzter Spieltag</span>
+          <span class="sub-header-info">Endergebnisse</span>
+        </div>
+        <div id="recent-matches-list">
+          <!-- Dynamischer Inhalt via JavaScript -->
+        </div>
+      </div>
+
+      <!-- 3. Ansicht: Nächster Spieltag (Vorschau) -->
+      <div id="fb-next-view" class="card" style="display: none;">
+        <div class="card-header">
+          <span id="league-next-title">1. Bundesliga – Nächster Spieltag</span>
+          <span class="sub-header-info">Anstoßzeiten</span>
+        </div>
+        <div id="next-matches-list">
+          <!-- Dynamischer Inhalt via JavaScript -->
+        </div>
+      </div>
+
+    </div>
+
+    <!-- TAB 2: FORMEL 1 CONTENT -->
+    <div id="tab-f1" class="tab-content">
+      <!-- Nächstes Rennen Highlight Banner -->
+      <div class="next-gp-banner">
+        <div class="next-gp-title">🏎️ Nächstes Rennen</div>
+        <div class="next-gp-name" id="f1-next-name">Großer Preis von Bahrain</div>
+        <div class="next-gp-info">
+          <span id="f1-next-date">📅 11. - 13. April 2025</span>
+          <span id="f1-next-circuit">📍 Sakhir Circuit</span>
+        </div>
+      </div>
+
+      <!-- F1 Tabellen / Listen -->
+      <div class="card f1-card-accent">
+        <div class="card-header">
+          <span id="f1-view-title">Fahrerwertung (Top 10)</span>
+          <span class="sub-header-info">Punkte</span>
+        </div>
+        <div class="table-container" id="f1-table-wrap">
+          <!-- Dynamischer Inhalt via JavaScript -->
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav">
+    <button class="nav-btn active" id="nav-fb" onclick="switchMainTab('football')">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24m5.66 0 4.24-4.24M12 2v6m0 8v6m-7.07-2.93 4.24-4.24m5.66 0 4.24 4.24"/></svg>
+      <span>Fußball</span>
+    </button>
+    <button class="nav-btn" id="nav-f1" onclick="switchMainTab('f1')">
+      <svg viewBox="0 0 24 24"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+      <span>Formel 1</span>
+    </button>
+  </nav>
+
+  <script src="script.js"></script>
+</body>
+</html>
