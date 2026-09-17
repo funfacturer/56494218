@@ -13,7 +13,7 @@ const cache = {
   activeSeasonYear: null
 };
 
-// Offizielle Premier-League-Vereinswappen
+// Offizielle Premier-League-Vereinswappen (inklusive Aufsteiger & Relegationskandidaten)
 const PL_LOGOS = {
   "Arsenal": "https://a.espncdn.com/i/teamlogos/soccer/500/359.png",
   "Aston Villa": "https://a.espncdn.com/i/teamlogos/soccer/500/362.png",
@@ -21,10 +21,13 @@ const PL_LOGOS = {
   "Brentford": "https://a.espncdn.com/i/teamlogos/soccer/500/337.png",
   "Brighton": "https://a.espncdn.com/i/teamlogos/soccer/500/331.png",
   "Chelsea": "https://a.espncdn.com/i/teamlogos/soccer/500/363.png",
+  "Coventry": "https://a.espncdn.com/i/teamlogos/soccer/500/392.png",
   "Crystal Palace": "https://a.espncdn.com/i/teamlogos/soccer/500/384.png",
   "Everton": "https://a.espncdn.com/i/teamlogos/soccer/500/368.png",
   "Fulham": "https://a.espncdn.com/i/teamlogos/soccer/500/370.png",
+  "Hull": "https://a.espncdn.com/i/teamlogos/soccer/500/306.png",
   "Ipswich": "https://a.espncdn.com/i/teamlogos/soccer/500/373.png",
+  "Leeds": "https://a.espncdn.com/i/teamlogos/soccer/500/357.png",
   "Leicester": "https://a.espncdn.com/i/teamlogos/soccer/500/375.png",
   "Liverpool": "https://a.espncdn.com/i/teamlogos/soccer/500/364.png",
   "Manchester City": "https://a.espncdn.com/i/teamlogos/soccer/500/382.png",
@@ -32,14 +35,16 @@ const PL_LOGOS = {
   "Newcastle": "https://a.espncdn.com/i/teamlogos/soccer/500/361.png",
   "Nottingham": "https://a.espncdn.com/i/teamlogos/soccer/500/393.png",
   "Southampton": "https://a.espncdn.com/i/teamlogos/soccer/500/376.png",
+  "Sunderland": "https://a.espncdn.com/i/teamlogos/soccer/500/366.png",
   "Tottenham": "https://a.espncdn.com/i/teamlogos/soccer/500/367.png",
   "West Ham": "https://a.espncdn.com/i/teamlogos/soccer/500/371.png",
   "Wolverhampton": "https://a.espncdn.com/i/teamlogos/soccer/500/380.png"
 };
 
 function getPLLogo(teamName) {
+  const lower = (teamName || "").toLowerCase();
   for (const [key, url] of Object.entries(PL_LOGOS)) {
-    if (teamName.includes(key)) return url;
+    if (lower.includes(key.toLowerCase())) return url;
   }
   return "";
 }
