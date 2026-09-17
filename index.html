@@ -1,54 +1,154 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <!-- viewport-fit=cover nutzt das gesamte Display inklusive Notch & Home-Bar -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  
-  <!-- Browser-Leisten & Statusbar-Farben -->
-  <meta name="theme-color" content="#0b1d3a">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="mobile-web-app-capable" content="yes">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>Sport Dashboard Live</title>
 
-  <title>Adventskalender2</title>
-  <link rel="stylesheet" href="style.css">
+  <!-- App-Icon Einbindung -->
+  <link rel="icon" type="image/png" href="icon.png" />
+  <link rel="apple-touch-icon" href="icon.png" />
+
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-  <!-- Fixierte Hintergrundschicht (verhindert weiße Ränder beim Scrollen/Bouncen) -->
-  <div class="bg-layer"></div>
+  <!-- Top App Header -->
+  <header>
+    <div class="header-left">
+      <img src="icon.png" class="app-header-icon" alt="Logo" onerror="this.style.display='none'" />
+      <div>
+        <h1 id="app-title">Fußball Live-Dashboard</h1>
+        <div id="live-status" class="status-indicator">● Ermittle aktuelle Saison...</div>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <span class="badge-live" id="season-badge">--/--</span>
+      <button id="refresh-btn" class="refresh-button" onclick="refreshCurrentData()" title="Daten aktualisieren">
+        <svg viewBox="0 0 24 24"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+      </button>
+    </div>
+  </header>
 
-  <!-- Schneefall -->
-  <div id="snow-container"></div>
+  <!-- Sub-Menu: Fußball Ligen & Ansichten -->
+  <div id="football-nav">
+    <div class="chip-container">
+      <button class="chip active" onclick="switchFootballLeague('bl1')">1. Bundesliga</button>
+      <button class="chip" onclick="switchFootballLeague('bl2')">2. Bundesliga</button>
+      <button class="chip" onclick="switchFootballLeague('bl3')">3. Liga</button>
+      <button class="chip" onclick="switchFootballLeague('pl')">Premier League</button>
+    </div>
 
-  <div class="app-wrapper">
-    <header>
-      <h1>✨ Adventskalender ✨</h1>
-      <p>Finde und öffne das heutige Türchen</p>
-    </header>
-
-    <!-- Freier Bereich für verstreute Türchen -->
-    <main class="calendar-canvas" id="calendar"></main>
-
-    <div class="controls">
-      <label class="toggle-label">
-        <input type="checkbox" id="test-mode">
-        <span>Testmodus</span>
-      </label>
-      <button class="btn-text" id="reset-btn">Neu anordnen</button>
+    <!-- 3-Wege-Umschalter -->
+    <div class="view-switch">
+      <button class="active" id="btn-table" onclick="toggleFootballView('table')">Tabelle</button>
+      <button id="btn-recent" onclick="toggleFootballView('recent')">Letzter Spieltag</button>
+      <button id="btn-next" onclick="toggleFootballView('next')">Nächster Spieltag</button>
     </div>
   </div>
 
-  <!-- Modal / Großansicht -->
-  <div class="modal-overlay" id="modal-overlay">
-    <div class="modal">
-      <div class="modal-badge" id="modal-day-badge">Tag 1</div>
-      <div class="modal-icon">🎁</div>
-      <p id="modal-content">Inhalt</p>
-      <button class="btn-primary" id="modal-close">Schließen</button>
+  <!-- Sub-Menu: Formel 1 -->
+  <div id="f1-nav" style="display: none;">
+    <div class="chip-container">
+      <button class="chip active" onclick="switchF1Category('drivers')">Fahrerwertung</button>
+      <button class="chip" onclick="switchF1Category('constructors')">Konstrukteure</button>
+      <button class="chip" onclick="switchF1Category('races')">Rennkalender</button>
     </div>
   </div>
+
+  <!-- Loading Bar -->
+  <div id="loading-spinner" class="loading-bar" style="display: none;">
+    <div class="spinner-line"></div>
+  </div>
+
+  <main>
+    <!-- TAB 1: FUSSBALL CONTENT -->
+    <div id="tab-football" class="tab-content active">
+
+      <!-- 1. Ansicht: Tabelle -->
+      <div id="fb-table-view" class="card">
+        <div class="card-header">
+          <span id="league-table-title">1. Bundesliga – Aktuelle Tabelle</span>
+          <span class="sub-header-info">Sp / Diff / Pkt</span>
+        </div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th class="pos-col">#</th>
+                <th>Verein</th>
+                <th class="num-col">Sp</th>
+                <th class="num-col">Diff</th>
+                <th class="points-col">Pkt</th>
+              </tr>
+            </thead>
+            <tbody id="table-body">
+              <!-- Dynamische Live-Daten via script.js -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 2. Ansicht: Letzter Spieltag (Ergebnisse) -->
+      <div id="fb-recent-view" class="card" style="display: none;">
+        <div class="card-header">
+          <span id="league-recent-title">1. Bundesliga – Letzter Spieltag</span>
+          <span class="sub-header-info" id="recent-subtitle">Endergebnisse</span>
+        </div>
+        <div id="recent-matches-list">
+          <!-- Dynamische Live-Daten via script.js -->
+        </div>
+      </div>
+
+      <!-- 3. Ansicht: Nächster Spieltag (Vorschau) -->
+      <div id="fb-next-view" class="card" style="display: none;">
+        <div class="card-header">
+          <span id="league-next-title">1. Bundesliga – Nächster Spieltag</span>
+          <span class="sub-header-info" id="next-subtitle">Anstoßzeiten</span>
+        </div>
+        <div id="next-matches-list">
+          <!-- Dynamische Live-Daten via script.js -->
+        </div>
+      </div>
+
+    </div>
+
+    <!-- TAB 2: FORMEL 1 CONTENT -->
+    <div id="tab-f1" class="tab-content">
+      <div class="next-gp-banner">
+        <div class="next-gp-title">🏎️ Nächstes Formel-1-Rennen</div>
+        <div class="next-gp-name" id="f1-next-name">Lade Grand Prix...</div>
+        <div class="next-gp-info">
+          <span id="f1-next-date">📅 --</span>
+          <span id="f1-next-circuit">📍 --</span>
+        </div>
+      </div>
+
+      <div class="card f1-card-accent">
+        <div class="card-header">
+          <span id="f1-view-title">Fahrerwertung</span>
+          <span class="sub-header-info">Punkte</span>
+        </div>
+        <div class="table-container" id="f1-table-wrap">
+          <!-- Dynamische Live-Daten via script.js -->
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav">
+    <button class="nav-btn active" id="nav-fb" onclick="switchMainTab('football')">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24m5.66 0 4.24-4.24M12 2v6m0 8v6m-7.07-2.93 4.24-4.24m5.66 0 4.24 4.24"/></svg>
+      <span>Fußball</span>
+    </button>
+    <button class="nav-btn" id="nav-f1" onclick="switchMainTab('f1')">
+      <svg viewBox="0 0 24 24"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+      <span>Formel 1</span>
+    </button>
+  </nav>
 
   <script src="script.js"></script>
 </body>
