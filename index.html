@@ -5,27 +5,43 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <title>Sport Dashboard Mobil</title>
+  <title>Sport Dashboard Live</title>
+  
+  <!-- App-Icon Einbindung -->
+  <link rel="icon" type="image/png" href="icon.png" />
+  <link rel="apple-touch-icon" href="icon.png" />
+  
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
   <!-- Top App Header -->
   <header>
-    <h1 id="app-title">Fußball Dashboard</h1>
-    <span class="badge-live">2024/25</span>
+    <div class="header-left">
+      <img src="icon.png" class="app-header-icon" alt="Logo" onerror="this.style.display='none'" />
+      <div>
+        <h1 id="app-title">Fußball Live-Dashboard</h1>
+        <div id="live-status" class="status-indicator">● Ermittle aktuelle Saison...</div>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <span class="badge-live" id="season-badge">--/--</span>
+      <button id="refresh-btn" class="refresh-button" onclick="refreshCurrentData()" title="Daten aktualisieren">
+        <svg viewBox="0 0 24 24"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+      </button>
+    </div>
   </header>
 
-  <!-- Sub-Menu: Fußball Ligen & Spieltag-Umschalter -->
+  <!-- Sub-Menu: Fußball Ligen & Ansichten -->
   <div id="football-nav">
     <div class="chip-container">
-      <div class="chip active" onclick="switchFootballLeague('bl1')">1. Bundesliga</div>
-      <div class="chip" onclick="switchFootballLeague('bl2')">2. Bundesliga</div>
-      <div class="chip" onclick="switchFootballLeague('bl3')">3. Liga</div>
-      <div class="chip" onclick="switchFootballLeague('pl')">Premier League</div>
+      <button class="chip active" onclick="switchFootballLeague('bl1')">1. Bundesliga</button>
+      <button class="chip" onclick="switchFootballLeague('bl2')">2. Bundesliga</button>
+      <button class="chip" onclick="switchFootballLeague('bl3')">3. Liga</button>
+      <button class="chip" onclick="switchFootballLeague('pl')">Premier League</button>
     </div>
 
-    <!-- 3-Wege-Umschalter: Tabelle / Letzter Spieltag / Nächster Spieltag -->
+    <!-- 3-Wege-Umschalter -->
     <div class="view-switch">
       <button class="active" id="btn-table" onclick="toggleFootballView('table')">Tabelle</button>
       <button id="btn-recent" onclick="toggleFootballView('recent')">Letzter Spieltag</button>
@@ -36,21 +52,26 @@
   <!-- Sub-Menu: Formel 1 -->
   <div id="f1-nav" style="display: none;">
     <div class="chip-container">
-      <div class="chip active" onclick="switchF1Category('drivers')">Fahrerwertung</div>
-      <div class="chip" onclick="switchF1Category('constructors')">Konstrukteure</div>
-      <div class="chip" onclick="switchF1Category('races')">Nächste Rennen</div>
+      <button class="chip active" onclick="switchF1Category('drivers')">Fahrerwertung</button>
+      <button class="chip" onclick="switchF1Category('constructors')">Konstrukteure</button>
+      <button class="chip" onclick="switchF1Category('races')">Rennkalender</button>
     </div>
+  </div>
+
+  <!-- Loading Bar -->
+  <div id="loading-spinner" class="loading-bar" style="display: none;">
+    <div class="spinner-line"></div>
   </div>
 
   <main>
     <!-- TAB 1: FUSSBALL CONTENT -->
     <div id="tab-football" class="tab-content active">
-      
+
       <!-- 1. Ansicht: Tabelle -->
       <div id="fb-table-view" class="card">
         <div class="card-header">
-          <span id="league-table-title">1. Bundesliga – Tabelle</span>
-          <span class="sub-header-info">Pkt / Diff</span>
+          <span id="league-table-title">1. Bundesliga – Aktuelle Tabelle</span>
+          <span class="sub-header-info">Sp / Diff / Pkt</span>
         </div>
         <div class="table-container">
           <table>
@@ -64,20 +85,20 @@
               </tr>
             </thead>
             <tbody id="table-body">
-              <!-- Dynamischer Inhalt via JavaScript -->
+              <!-- Dynamische Live-Daten via script.js -->
             </tbody>
           </table>
         </div>
       </div>
 
-      <!-- 2. Ansicht: Letzter / Aktueller Spieltag (Ergebnisse) -->
+      <!-- 2. Ansicht: Letzter Spieltag (Ergebnisse) -->
       <div id="fb-recent-view" class="card" style="display: none;">
         <div class="card-header">
           <span id="league-recent-title">1. Bundesliga – Letzter Spieltag</span>
-          <span class="sub-header-info">Endergebnisse</span>
+          <span class="sub-header-info" id="recent-subtitle">Endergebnisse</span>
         </div>
         <div id="recent-matches-list">
-          <!-- Dynamischer Inhalt via JavaScript -->
+          <!-- Dynamische Live-Daten via script.js -->
         </div>
       </div>
 
@@ -85,10 +106,10 @@
       <div id="fb-next-view" class="card" style="display: none;">
         <div class="card-header">
           <span id="league-next-title">1. Bundesliga – Nächster Spieltag</span>
-          <span class="sub-header-info">Anstoßzeiten</span>
+          <span class="sub-header-info" id="next-subtitle">Anstoßzeiten</span>
         </div>
         <div id="next-matches-list">
-          <!-- Dynamischer Inhalt via JavaScript -->
+          <!-- Dynamische Live-Daten via script.js -->
         </div>
       </div>
 
@@ -96,24 +117,22 @@
 
     <!-- TAB 2: FORMEL 1 CONTENT -->
     <div id="tab-f1" class="tab-content">
-      <!-- Nächstes Rennen Highlight Banner -->
       <div class="next-gp-banner">
-        <div class="next-gp-title">🏎️ Nächstes Rennen</div>
-        <div class="next-gp-name" id="f1-next-name">Großer Preis von Bahrain</div>
+        <div class="next-gp-title">🏎️ Nächstes Formel-1-Rennen</div>
+        <div class="next-gp-name" id="f1-next-name">Lade Grand Prix...</div>
         <div class="next-gp-info">
-          <span id="f1-next-date">📅 11. - 13. April 2025</span>
-          <span id="f1-next-circuit">📍 Sakhir Circuit</span>
+          <span id="f1-next-date">📅 --</span>
+          <span id="f1-next-circuit">📍 --</span>
         </div>
       </div>
 
-      <!-- F1 Tabellen / Listen -->
       <div class="card f1-card-accent">
         <div class="card-header">
-          <span id="f1-view-title">Fahrerwertung (Top 10)</span>
+          <span id="f1-view-title">Fahrerwertung</span>
           <span class="sub-header-info">Punkte</span>
         </div>
         <div class="table-container" id="f1-table-wrap">
-          <!-- Dynamischer Inhalt via JavaScript -->
+          <!-- Dynamische Live-Daten via script.js -->
         </div>
       </div>
     </div>

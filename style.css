@@ -5,11 +5,9 @@
   --text-main: #f0f6fc;
   --text-muted: #8b949e;
   --accent: #238636;
-  --accent-hover: #2ea043;
   --accent-f1: #e10600;
   --accent-blue: #58a6ff;
   --border: #30363d;
-  --badge-finished: #238636;
 }
 
 * {
@@ -27,35 +25,104 @@ body {
   user-select: none;
 }
 
-/* Header */
+/* Header mit Logo */
 header {
   position: sticky;
   top: 0;
   background: rgba(22, 27, 34, 0.95);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--border);
-  padding: 14px 16px;
+  padding: 10px 16px;
   z-index: 100;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.app-header-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid var(--border);
+}
+
 header h1 {
-  font-size: 1.15rem;
+  font-size: 1.05rem;
   font-weight: 700;
   letter-spacing: -0.3px;
 }
 
+.status-indicator {
+  font-size: 0.68rem;
+  color: #3fb950;
+  margin-top: 1px;
+}
+
 .badge-live {
-  background: var(--accent);
+  background: #238636;
   color: white;
-  font-size: 0.7rem;
+  font-size: 0.72rem;
   font-weight: 700;
-  padding: 3px 7px;
+  padding: 3px 8px;
   border-radius: 12px;
-  text-transform: uppercase;
   letter-spacing: 0.5px;
+}
+
+.refresh-button {
+  background: var(--bg-card-sub);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.refresh-button:active {
+  transform: rotate(180deg);
+  color: var(--text-main);
+}
+
+.refresh-button svg {
+  width: 17px;
+  height: 17px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2.2;
+}
+
+/* Loading Line */
+.loading-bar {
+  height: 3px;
+  width: 100%;
+  background-color: var(--bg-card-sub);
+  overflow: hidden;
+  position: sticky;
+  top: 56px;
+  z-index: 99;
+}
+
+.spinner-line {
+  width: 40%;
+  height: 100%;
+  background-color: var(--accent-blue);
+  animation: loadingAnim 1s infinite linear;
+}
+
+@keyframes loadingAnim {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(250%); }
 }
 
 /* Sub-Navigation Chips */
@@ -82,7 +149,6 @@ header h1 {
   white-space: nowrap;
   cursor: pointer;
   font-weight: 600;
-  transition: all 0.2s ease;
 }
 
 .chip.active {
@@ -94,7 +160,7 @@ header h1 {
 /* 3-Wege View Switcher */
 .view-switch {
   display: flex;
-  margin: 6px 16px 14px 16px;
+  margin: 4px 16px 14px 16px;
   background: var(--bg-card);
   border-radius: 8px;
   padding: 3px;
@@ -104,7 +170,7 @@ header h1 {
 
 .view-switch button {
   flex: 1;
-  padding: 7px 4px;
+  padding: 8px 4px;
   background: none;
   border: none;
   color: var(--text-muted);
@@ -112,7 +178,6 @@ header h1 {
   font-weight: 600;
   border-radius: 6px;
   cursor: pointer;
-  transition: background 0.15s ease, color 0.15s ease;
 }
 
 .view-switch button.active {
@@ -121,7 +186,6 @@ header h1 {
   box-shadow: 0 1px 3px rgba(0,0,0,0.3);
 }
 
-/* Main Container */
 main {
   padding: 0 16px;
 }
@@ -173,7 +237,7 @@ th {
 }
 
 td {
-  padding: 10px 8px;
+  padding: 9px 8px;
   border-bottom: 1px solid rgba(48, 54, 61, 0.4);
 }
 
@@ -182,9 +246,18 @@ tr:last-child td {
 }
 
 .pos-col {
-  width: 24px;
+  width: 26px;
   text-align: center;
   font-weight: 700;
+  color: var(--text-muted);
+}
+
+.pos-col.top-4 {
+  color: var(--accent-blue);
+}
+
+.pos-col.rel-zone {
+  color: #da3633;
 }
 
 .team-cell {
@@ -194,8 +267,16 @@ tr:last-child td {
   font-weight: 600;
 }
 
+.team-icon {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
 .num-col {
   text-align: center;
+  color: var(--text-muted);
 }
 
 .points-col {
@@ -229,26 +310,26 @@ tr:last-child td {
   padding: 0 10px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 5px;
 }
 
 .match-team {
   font-size: 0.85rem;
   font-weight: 600;
   display: flex;
-  justify-content: space-between;
+  align-items: center;
+  gap: 6px;
 }
 
 .match-badge {
   font-size: 0.8rem;
-  padding: 5px 10px;
+  padding: 5px 9px;
   border-radius: 6px;
   background: var(--bg-card-sub);
   color: var(--text-main);
   font-weight: 700;
-  min-width: 54px;
+  min-width: 52px;
   text-align: center;
-  letter-spacing: 0.5px;
 }
 
 .match-badge.result {
@@ -257,7 +338,14 @@ tr:last-child td {
   color: #3fb950;
 }
 
-/* Formel 1 Specials */
+.empty-matches-msg {
+  padding: 24px 16px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+/* F1 */
 .f1-card-accent {
   border-left: 4px solid var(--accent-f1);
 }
@@ -338,7 +426,6 @@ nav.bottom-nav {
   stroke: var(--accent-blue);
 }
 
-/* Tab Switching Visibility */
 .tab-content {
   display: none;
 }
