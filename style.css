@@ -301,7 +301,7 @@ tr:last-child td {
 .match-date {
   font-size: 0.72rem;
   color: var(--text-muted);
-  width: 65px;
+  width: 75px;
   line-height: 1.3;
 }
 
